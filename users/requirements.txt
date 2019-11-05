@@ -1,2 +1,2 @@
 nameko==2.12.0
-Pyrebase==3.0.27
+nameko-redis==1.1.0

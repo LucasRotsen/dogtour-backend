@@ -64,6 +64,10 @@ services:
         RABBIT_USER: "guest"
         RABBIT_HOST: "rabbit"
         RABBIT_PORT: "5672"
+        HTTP.CORS.ENABLED: "true"
+        HTTP.CORS.ALLOW-ORIGIN: "http://localhost:4200"
+        HTTP.CORS.ALLOW-HEADERS: "X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization"
+        HTTP.CORS.ALLOW-CREDENTIALS: "true"
 
 volumes:
   redis-data:
