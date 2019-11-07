@@ -10,22 +10,52 @@ class UsersService:
     redis = Redis('development')
 
     @rpc
-    def login(self, user_id):
-        user = self.redis.hgetall(user_id)
-        return user
+    def login(self, user_data):
+        auth_info = self.redis.hgetall(user_data['email'])
+        
+        response = {
+            "user_id": None, 
+            "status": 418
+        }
+
+        if auth_info and (user_data['password'] == auth_info['password']):
+            response['user_id'] = auth_info['user_id']
+            response['status'] = 200
+    
+        return response
 
     @rpc
     def get(self, user_id):
-        user = self.redis.hgetall(user_id)
-        return user
+        user_email = self.redis.get(user_id)
+        user = self.redis.hgetall(user_email)
 
+        return user
+    
     @rpc
     def create(self, user):
-        user_id = uuid.uuid4().hex
-        self.redis.hmset(user_id, {
-            "name": user['name'],
-            "email": user['email'],
-            "password": user['password'],
-            "role": user['role']
-        })
-        return user_id
+
+        response = {
+            "user_id": None,
+            "status": 418
+        }
+
+        user_exists = self.redis.hgetall(user['email'])
+        
+        if not user_exists:
+            
+            user_id = uuid.uuid4().hex
+
+            self.redis.set(user_id, user['email'])
+
+            self.redis.hmset(user['email'], {
+                "user_id": user_id,
+                "email": user['email'],
+                "password": user['password'],
+                "name": user['name'],
+                "role": user['role']
+            })
+
+            response['user_id'] = user_id
+            response['status'] = 200
+
+        return response
