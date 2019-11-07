@@ -14,9 +14,13 @@ class GatewayService:
     @http('POST', '/login')
     def login(self, request):
         data = json.loads(request.get_data(as_text=True))
-        user_id = self.users_rpc.login(data)
+        response = self.users_rpc.login(data)
 
-        return user_id
+        return Response(
+            json.dumps({'user_id': response['user_id']}),
+            status=response['status'],
+            mimetype='application/json'
+        )
 
     @http('GET', '/user/<string:user_id>')
     def get_user(self, request, user_id):
@@ -27,9 +31,13 @@ class GatewayService:
     @http('POST', '/user')
     def post_user(self, request):
         data = json.loads(request.get_data(as_text=True))
-        user_id = self.users_rpc.create(data)
+        response = self.users_rpc.create(data)
 
-        return user_id
+        return Response(
+            json.dumps({'user_id': response['user_id']}),
+            status=response['status'],
+            mimetype='application/json'
+        )
 
     @http('GET', '/dog/<string:dog_id>')
     def get_dog(self, request, dog_id):
@@ -40,6 +48,13 @@ class GatewayService:
     @http('POST', '/dog')
     def post_dog(self, request):
         data = json.loads(request.get_data(as_text=True))
-        dog_id = self.dogs_rpc.create(data['owner'], data['dog'])
+        response = self.dogs_rpc.create(data)
 
-        return dog_id
+        return Response(
+            json.dumps({
+                'dog_id': response['dog_id'],
+                'name': response['name']
+            }),
+            status=response['status'],
+            mimetype='application/json'
+        )
