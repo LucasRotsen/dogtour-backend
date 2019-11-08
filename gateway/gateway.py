@@ -58,3 +58,13 @@ class GatewayService:
             status=response['status'],
             mimetype='application/json'
         )
+    
+    @http('GET', '/user/<string:user_id>/dogs')
+    def get_user_dogs(self, request, user_id):
+        response = self.dogs_rpc.get_user_dogs(user_id)
+        
+        return Response(
+            json.dumps({'dogs': response['dogs']}),
+            status=response['status'],
+            mimetype='application/json'
+        )

@@ -1,11 +1,13 @@
 import uuid
 
-from nameko.rpc import rpc
+from nameko.rpc import RpcProxy, rpc
 from nameko_redis import Redis
 
 
 class DogsService:
     name = "dogs"
+
+    users_rpc = RpcProxy('users')
 
     redis = Redis('development')
 
@@ -43,3 +45,28 @@ class DogsService:
         }
 
         return response
+
+    @rpc
+    def get_user_dogs(self, user_id):
+        
+        response = {
+            "dogs": {},
+            "status": 418
+        }
+
+        user = self.users_rpc.get(user_id)
+        
+        dogs = {}
+        keys = user.keys()
+
+        for key in keys:
+            if key.startswith('dog:'):
+                dogs[user[key]] = self.get(user[key])
+        
+        if dogs:
+            response['dogs'] = dogs
+            response['status'] = 200
+
+        return response
+
+
