@@ -19,7 +19,7 @@ class GatewayService:
         return Response(
             json.dumps({'user_id': response['user_id']}),
             status=response['status'],
-            mimetype='application/json'
+            mimetype='text/plain'
         )
 
     @http('GET', '/api/user/<string:user_id>')
@@ -36,7 +36,7 @@ class GatewayService:
         return Response(
             json.dumps({'user_id': response['user_id']}),
             status=response['status'],
-            mimetype='application/json'
+            mimetype='text/plain'
         )
 
     @http('GET', '/api/dog/<string:dog_id>')
@@ -56,7 +56,7 @@ class GatewayService:
                 'name': response['name']
             }),
             status=response['status'],
-            mimetype='application/json'
+            mimetype='text/plain'
         )
     
     @http('GET', '/api/user/<string:user_id>/dogs')
@@ -66,5 +66,5 @@ class GatewayService:
         return Response(
             json.dumps({'dogs': response['dogs']}),
             status=response['status'],
-            mimetype='application/json'
+            mimetype='text/plain'
         )
