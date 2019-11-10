@@ -51,7 +51,7 @@ class DogsService:
         
         response = {
             "dogs": {},
-            "status": 418
+            "status": 200
         }
 
         user = self.users_rpc.get(user_id)
