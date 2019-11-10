@@ -11,7 +11,7 @@ class GatewayService:
     dogs_rpc = RpcProxy('dogs')
     tours_rpc = RpcProxy('tours')
 
-    @http('POST', '/login')
+    @http('POST', '/api/login')
     def login(self, request):
         data = json.loads(request.get_data(as_text=True))
         response = self.users_rpc.login(data)
@@ -22,13 +22,13 @@ class GatewayService:
             mimetype='application/json'
         )
 
-    @http('GET', '/user/<string:user_id>')
+    @http('GET', '/api/user/<string:user_id>')
     def get_user(self, request, user_id):
         user = self.users_rpc.get(user_id)
 
         return json.dumps({'user': user})
 
-    @http('POST', '/user')
+    @http('POST', '/api/user')
     def post_user(self, request):
         data = json.loads(request.get_data(as_text=True))
         response = self.users_rpc.create(data)
@@ -39,13 +39,13 @@ class GatewayService:
             mimetype='application/json'
         )
 
-    @http('GET', '/dog/<string:dog_id>')
+    @http('GET', '/api/dog/<string:dog_id>')
     def get_dog(self, request, dog_id):
         dog = self.dogs_rpc.get(dog_id)
         
         return json.dumps({'dog': dog})
 
-    @http('POST', '/dog')
+    @http('POST', '/api/dog')
     def post_dog(self, request):
         data = json.loads(request.get_data(as_text=True))
         response = self.dogs_rpc.create(data)
@@ -59,7 +59,7 @@ class GatewayService:
             mimetype='application/json'
         )
     
-    @http('GET', '/user/<string:user_id>/dogs')
+    @http('GET', '/api/user/<string:user_id>/dogs')
     def get_user_dogs(self, request, user_id):
         response = self.dogs_rpc.get_user_dogs(user_id)
         
