@@ -68,3 +68,13 @@ class GatewayService:
             status=response['status'],
             mimetype='text/plain'
         )
+
+    @http('GET', '/api/users/<string:role>')
+    def get_users_by_role(self, request, role):
+        response = self.users_rpc.get_by_role(role)
+        
+        return Response(
+            json.dumps({'users': response['users']}),
+            status=response['status'],
+            mimetype='text/plain'
+        )

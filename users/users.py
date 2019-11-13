@@ -59,3 +59,26 @@ class UsersService:
             response['status'] = 200
 
         return response
+    
+    @rpc
+    def get_by_role(self, role):
+
+        response = {
+            "users": {},
+            "status": 418
+        }
+
+        users_keys = self.redis.keys('*@*')
+        users = {}
+
+        for user_key in users_keys:
+            user = self.redis.hgetall(user_key)
+
+            if user['role'] == role:
+                users[user['user_id']] = user
+        
+        if users:
+            response['users'] = users
+            response['status'] = 200
+
+        return response
