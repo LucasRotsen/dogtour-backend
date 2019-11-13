@@ -78,3 +78,24 @@ class GatewayService:
             status=response['status'],
             mimetype='text/plain'
         )
+    
+    @http('POST', '/api/user/rate')
+    def rate_user(self, request):
+        data = json.loads(request.get_data(as_text=True))
+        response = self.users_rpc.rate(data)
+        
+        return Response(
+            json.dumps({'rating': response['rating']}),
+            status=response['status'],
+            mimetype='text/plain'
+        )
+    
+    @http('POST', '/api/walker/schedule')
+    def post_walker_schedule(self, request):
+        data = json.loads(request.get_data(as_text=True))
+        response = self.users_rpc.walker_schedule(data)
+        
+        return Response(
+            status=response['status'],
+            mimetype='text/plain'
+        )

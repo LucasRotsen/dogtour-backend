@@ -82,3 +82,23 @@ class UsersService:
             response['status'] = 200
 
         return response
+    
+    @rpc
+    def rate(self, user_data):
+
+        user = self.get(user_data['user_id'])
+        rating = user_data['rating']
+
+        if 'rating' in user:
+            rating = (rating + user['rating']) // 2
+
+        user_rating = {
+            "rating": rating
+        }
+
+        self.redis.hmset(user['email'], user_rating)
+
+        return {
+            "rating": rating,
+            "status": 200  
+        }
