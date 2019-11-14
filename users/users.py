@@ -87,10 +87,10 @@ class UsersService:
     def rate(self, user_data):
 
         user = self.get(user_data['user_id'])
-        rating = user_data['rating']
+        rating = int(user_data['rating'])
 
         if 'rating' in user:
-            rating = (rating + user['rating']) // 2
+            rating = (rating + int(user['rating'])) // 2
 
         user_rating = {
             "rating": rating
