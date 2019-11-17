@@ -61,6 +61,22 @@ class UsersService:
         return response
     
     @rpc
+    def delete(self, user_id):
+        user = self.get(user_id)
+
+        response = {
+            "status": 418
+        }
+
+        if user:
+            self.redis.delete(user_id)
+            self.redis.delete(user['email'])
+            
+            response['status'] = 200
+
+        return response
+  
+    @rpc
     def get_by_role(self, role):
 
         response = {

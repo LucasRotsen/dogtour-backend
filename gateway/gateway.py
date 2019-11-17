@@ -38,6 +38,15 @@ class GatewayService:
             status=response['status'],
             mimetype='text/plain'
         )
+    
+    @http('DELETE', '/api/user/<string:user_id>/delete')
+    def delete_user(self, request, user_id):
+        response = self.users_rpc.delete(user_id)
+
+        return Response(
+            status=response['status'],
+            mimetype='text/plain'
+        )
 
     @http('GET', '/api/dog/<string:dog_id>')
     def get_dog(self, request, dog_id):
