@@ -90,12 +90,44 @@ class GatewayService:
             mimetype='text/plain'
         )
     
-    @http('POST', '/api/walker/schedule')
-    def post_walker_schedule(self, request):
+    @http('POST', '/api/user/availability')
+    def register_user_availability(self, request):
         data = json.loads(request.get_data(as_text=True))
-        response = self.users_rpc.walker_schedule(data)
+        response = self.users_rpc.register_availability(data)
         
         return Response(
             status=response['status'],
             mimetype='text/plain'
         )
+    
+    @http('GET', '/api/user/<string:user_id>/availability')
+    def get_user_availability(self, request, user_id):
+        response = self.users_rpc.get_availability(user_id)
+        
+        return Response(
+            json.dumps({'availability': response['availability']}),
+            status=response['status'],
+            mimetype='text/plain'
+        )
+    
+    @http('POST', '/api/tours/schedule')
+    def schedule_a_tour(self, request):
+        data = json.loads(request.get_data(as_text=True))
+        response = self.tours_rpc.schedule(data)
+        
+        return Response(
+            status=response['status'],
+            mimetype='text/plain'
+        )
+    
+    @http('GET', '/api/user/<string:user_id>/tours/<string:tour_status>')
+    def get_user_tours_by_status(self, request, user_id, tour_status):
+        response = self.tours_rpc.get_by_user_status(user_id, tour_status)
+        
+        return Response(
+            json.dumps({'tours': response['tours']}),
+            status=response['status'],
+            mimetype='text/plain'
+        )
+    
+    
