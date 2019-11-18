@@ -119,19 +119,20 @@ class GatewayService:
             mimetype='text/plain'
         )
     
-    @http('POST', '/api/tours/schedule')
+    @http('POST', '/api/tour/schedule')
     def schedule_a_tour(self, request):
         data = json.loads(request.get_data(as_text=True))
-        response = self.tours_rpc.schedule(data)
+        response = self.tours_rpc.create(data)
         
         return Response(
+            json.dumps({'tour': response['tour']}),
             status=response['status'],
             mimetype='text/plain'
         )
     
     @http('GET', '/api/user/<string:user_id>/tours/<string:tour_status>')
     def get_user_tours_by_status(self, request, user_id, tour_status):
-        response = self.tours_rpc.get_by_user_status(user_id, tour_status)
+        response = self.tours_rpc.get_by_user_and_status(user_id, tour_status)
         
         return Response(
             json.dumps({'tours': response['tours']}),
