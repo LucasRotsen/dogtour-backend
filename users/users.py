@@ -120,40 +120,6 @@ class UsersService:
         }
     
     @rpc
-    def register_availability(self, user_data):
-
-        user = self.get(user_data['user_id'])
-
-        day_availability_id = uuid.uuid4().hex
-
-        if not user_data['day'] in user:
-
-            self.redis.hmset(day_availability_id, {
-                1 : user_data['time']
-            })
-
-            day_availability = {
-                user_data['day']: day_availability_id
-            }
-
-            self.redis.hmset(user['email'], day_availability)
-        
-        else:
-
-            availability = self.redis.hgetall(user[user_data['day']])
-            key = max(list(map(int, availability.keys()))) + 1
-
-            data = {
-                key : user_data['time']
-            }
-
-            self.redis.hmset(user[user_data['day']], data)
-
-        return {
-            "status": 200
-        }
-    
-    @rpc
     def get_availability(self, user_id):
         
         WEEKDAYS = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo']
@@ -170,4 +136,37 @@ class UsersService:
         return {
             "availability": availability,
             "status": 200 if availability else 418
+        }
+
+    @rpc
+    def register_availability(self, user_data):
+
+        user = self.get(user_data['user_id'])
+
+        if 'availability' in user:
+            self.redis.delete(user['availability'])
+
+        availability_list = user_data['availability']
+        
+        user_availability_id = uuid.uuid4().hex
+        user_availability = {
+            "availability" : user_availability_id
+        }
+        self.redis.hmset(user['email'], user_availability)
+
+        for i in range(0, len(availability_list)):
+
+            day_time = availability_list[i]['day'] + '|' + availability_list[i]['time']
+
+            data = {
+                'day:' + str(i) : day_time
+            }
+
+            self.redis.hmset(user_availability_id, data)
+
+        avaliabilidade = self.redis.hgetall(user_availability_id)
+
+        return {
+            "availability": avaliabilidade,
+            "status": 200
         }
