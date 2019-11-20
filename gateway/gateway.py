@@ -150,4 +150,13 @@ class GatewayService:
             mimetype='text/plain'
         )
     
+    @http('POST', '/api/tour/update')
+    def update_tour_status(self, request):
+        data = json.loads(request.get_data(as_text=True))
+        response = self.tours_rpc.update(data)
+        
+        return Response(
+            status=response['status'],
+            mimetype='text/plain'
+        )
     

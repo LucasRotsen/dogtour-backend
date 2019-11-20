@@ -109,3 +109,17 @@ class UsersService:
             response['status'] = 200
 
         return response
+
+    @rpc
+    def update(self, tour_data):
+        tour_key = 'tour:' + tour_data['tour_id']
+
+        data = {
+            'status': tour_data['status']
+        }
+
+        self.redis.hmset(tour_key, data)
+
+        return {
+            'status': 200
+        }
