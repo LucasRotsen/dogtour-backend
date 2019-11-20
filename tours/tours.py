@@ -65,7 +65,7 @@ class UsersService:
         
         response = {
             "tours": {},
-            "status": 418
+            "status": 200
         }
 
         tours_keys = self.redis.keys('*tour:*')
@@ -82,7 +82,6 @@ class UsersService:
         
         if tours:
             response['tours'] = tours
-            response['status'] = 200
 
         return response
 
@@ -91,7 +90,7 @@ class UsersService:
         
         response = {
             "tours": {},
-            "status": 418
+            "status": 200
         }
 
         tours_keys = self.redis.keys('*tour:*')
@@ -106,7 +105,6 @@ class UsersService:
         
         if tours:
             response['tours'] = tours
-            response['status'] = 200
 
         return response
 
