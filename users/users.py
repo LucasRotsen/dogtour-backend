@@ -122,21 +122,19 @@ class UsersService:
     @rpc
     def get_availability(self, user_id):
         
-        WEEKDAYS = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo']
-        availability = {}
-
         user = self.get(user_id)
-        keys = user.keys()
 
-        for key in keys:
-            if key in WEEKDAYS:
-                day_availability = self.redis.hgetall(user[key])
-                availability[key] = day_availability
-
-        return {
-            "availability": availability,
-            "status": 200 if availability else 418
+        response = {
+            'availability': {},
+            'status': 418
         }
+        
+        if 'availability' in user:
+            user_availability = self.redis.hgetall(user['availability'])
+            response['availability'] = user_availability
+            response['status'] = 200
+
+        return response
 
     @rpc
     def register_availability(self, user_data):
@@ -164,9 +162,6 @@ class UsersService:
 
             self.redis.hmset(user_availability_id, data)
 
-        avaliabilidade = self.redis.hgetall(user_availability_id)
-
         return {
-            "availability": avaliabilidade,
             "status": 200
         }

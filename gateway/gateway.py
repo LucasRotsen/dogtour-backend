@@ -105,7 +105,6 @@ class GatewayService:
         response = self.users_rpc.register_availability(data)
         
         return Response(
-            json.dumps({'availability': response['availability']}),
             status=response['status'],
             mimetype='text/plain'
         )
