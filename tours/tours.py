@@ -85,3 +85,27 @@ class UsersService:
             response['status'] = 200
 
         return response
+
+    @rpc
+    def get_by_user(self, user_id):
+        
+        response = {
+            "tours": {},
+            "status": 418
+        }
+
+        tours_keys = self.redis.keys('*tour:*')
+
+        tours = {}
+
+        for tour_key in tours_keys:
+            tour = self.redis.hgetall(tour_key)
+
+            if (tour['owner_id'] == user_id or tour['walker_id'] == user_id):
+                tours[tour_key.split(':')[1]] = tour
+        
+        if tours:
+            response['tours'] = tours
+            response['status'] = 200
+
+        return response

@@ -141,4 +141,14 @@ class GatewayService:
             mimetype='text/plain'
         )
     
+    @http('GET', '/api/user/<string:user_id>/tours')
+    def get_user_tours(self, request, user_id):
+        response = self.tours_rpc.get_by_user(user_id)
+        
+        return Response(
+            json.dumps({'tours': response['tours']}),
+            status=response['status'],
+            mimetype='text/plain'
+        )
+    
     
