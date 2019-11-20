@@ -11,33 +11,6 @@ class UsersService:
 
     @rpc
     def create(self, tour):
-        
-        """
-        
-        {
-            "owner_id":"32d12asg132gegadg3br",
-            "dog_id":"123aswueciueaebfhjebda",
-            "walker_id":"asde2827382u8e9c8e8ce",
-            "day":"Quarta",
-            "time":"2019-11-17T08:12:38.803-03:00",
-            "latitude":"41.40338, 2.17403",
-            "longitude":"80.40238, 1.97003"
-        }
-        
-        Salvo:
-
-        tour:1f5ew18ae1c6e8ve81e8e81be = {         
-            "owner_id":"32d12asg132gegadg3br",
-            "dog_id":"123aswueciueaebfhjebda",
-            "walker_id":"asde2827382u8e9c8e8ce",
-            "day":"Quarta",
-            "time":"2019-11-17T08:12:38.803-03:00",
-            "latitude":"41.40338, 2.17403",
-            "longitude":"80.40238, 1.97003",
-            "status": "aguardando confirmação"
-        }
-
-        """
 
         tour_id = uuid.uuid4().hex
         key = "tour:" + tour_id
@@ -119,5 +92,33 @@ class UsersService:
         self.redis.hmset(tour_key, data)
 
         return {
+            'status': 200
+        }
+
+    @rpc
+    def confirm(self, tour_data):
+        
+        """
+
+        {
+            'tour_id': '18jw8dj19w8j8j',
+            'user_id': 'iqnwinqowicniwqnci',
+        }
+
+        """
+
+        tour_key = 'tour:' + tour_data['tour_id']
+
+        data = {
+            'walker_id': tour_data['user_id'],
+            'status': 1
+        }
+
+        self.redis.hmset(tour_key, data)
+
+        tour = self.redis.hgetall(tour_key)
+
+        return {
+            'tour': tour,
             'status': 200
         }

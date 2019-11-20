@@ -165,3 +165,19 @@ class UsersService:
         return {
             "status": 200
         }
+    
+    @rpc
+    def flush_all(self, request):
+
+        qtty_keys = 0
+        keys = self.redis.keys('*')
+
+        for key in keys:
+            qtty_keys += self.redis.delete(key)
+
+        return {
+            'qtty': qtty_keys,
+            'status': 200 if keys else 418
+        }
+        
+    

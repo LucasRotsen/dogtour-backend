@@ -160,3 +160,25 @@ class GatewayService:
             mimetype='text/plain'
         )
     
+    @http('POST', '/api/tour/confirm')
+    def confirm_a_tour(self, request):
+        data = json.loads(request.get_data(as_text=True))
+        response = self.tours_rpc.confirm(data)
+        
+        return Response(
+            json.dumps({'tour': response['tour']}),
+            status=response['status'],
+            mimetype='text/plain'
+        )
+    
+    @http('DELETE', '/flush')
+    def confirm_a_tour(self, request):
+        data = json.loads(request.get_data(as_text=True))
+        response = self.users_rpc.flush_all(data)
+        
+        return Response(
+            json.dumps({'qtty': response['qtty']}),
+            status=response['status'],
+            mimetype='text/plain'
+        )
+    
