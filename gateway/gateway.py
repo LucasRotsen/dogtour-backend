@@ -195,7 +195,7 @@ class GatewayService:
     
     @http('GET', '/api/tours/requested')
     def get_requested_tours(self, request):
-        response = self.users_rpc.get_requested()
+        response = self.tours_rpc.get_requested()
         
         return Response(
             json.dumps({'tours': response['tours']}),
