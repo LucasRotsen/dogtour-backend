@@ -94,6 +94,29 @@ class ToursService:
             response['tours'] = tours
 
         return response
+    
+    @rpc
+    def get_requested(self):
+        
+        response = {
+            "tours": {},
+            "status": 200
+        }
+
+        tours_keys = self.redis.keys('*tour:*')
+
+        tours = {}
+
+        for tour_key in tours_keys:
+            tour = self.redis.hgetall(tour_key)
+
+            if not 'walker_id' in tour:
+                tours[tour_key.split(':')[1]] = tour
+        
+        if tours:
+            response['tours'] = tours
+
+        return response
 
     @rpc
     def update(self, tour_data):
@@ -116,15 +139,12 @@ class ToursService:
 
         data = {
             'walker_id': tour_data['user_id'],
-            'status': 4 #ongoing tour
+            'status': 2 #ongoing tour
         }
 
         self.redis.hmset(tour_key, data)
 
-        tour = self.redis.hgetall(tour_key)
-
         return {
-            'tour': tour,
             'status': 200
         }
     
@@ -134,7 +154,7 @@ class ToursService:
         tour_id = self.create(data)
          
         response = {}
-        timeout = time.time() + 60*5
+        timeout = time.time() + 60*2
 
         while not response and time.time() < timeout:
             response = self.match_walker(tour_id['tour_id'])
