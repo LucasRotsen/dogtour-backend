@@ -179,5 +179,3 @@ class UsersService:
             'qtty': qtty_keys,
             'status': 200 if keys else 418
         }
-        
-    

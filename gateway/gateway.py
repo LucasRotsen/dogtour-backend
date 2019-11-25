@@ -1,4 +1,5 @@
 import json
+import time
 
 from nameko.rpc import RpcProxy
 from nameko.web.handlers import http
@@ -125,7 +126,7 @@ class GatewayService:
         response = self.tours_rpc.create(data)
         
         return Response(
-            json.dumps({'tour': response['tour']}),
+            json.dumps({'tour_id': response['tour_id']}),
             status=response['status'],
             mimetype='text/plain'
         )
@@ -172,7 +173,7 @@ class GatewayService:
         )
     
     @http('DELETE', '/flush')
-    def confirm_a_tour(self, request):
+    def flush_all(self, request):
         data = json.loads(request.get_data(as_text=True))
         response = self.users_rpc.flush_all(data)
         
@@ -182,3 +183,13 @@ class GatewayService:
             mimetype='text/plain'
         )
     
+    @http('POST', '/api/request/tour')
+    def request_a_tour(self, request):
+        data = json.loads(request.get_data(as_text=True))
+        response = self.tours_rpc.request(data)
+        
+        return Response(
+            json.dumps({'tour': response['tour']}),
+            status=response['status'],
+            mimetype='text/plain'
+        )
