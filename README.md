@@ -8,3 +8,14 @@ DogTour é uma plataforma cujo objetivo é facilitar o agendamento de passeios c
 <br>
 
 Foram criados dois repositórios para o sistema, um para o [Front-end](https://github.com/RafaelBadaro/dogtour.git) e outro para o [Back-end](https://github.com/LucasRotsen/dogtour-backend.git).
+
+<br>
+
+## Executando o projeto
+
+### Back-end
+
+Para executar o Back-end do projeto basta executar o seguinte comando:
+
+    $ docker-compose up
+
