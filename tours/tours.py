@@ -186,6 +186,8 @@ class ToursService:
             'owner': self.users_rpc.get(tour['owner_id']),
             'dog': self.dogs_rpc.get(tour['dog_id']),
             'walker': self.users_rpc.get(tour['walker_id']) if ('walker_id' in tour) else "",
+            'day': tour['day'] if ('day' in tour) else "",
+            'time': tour['time'] if ('time' in tour) else "",
             'latitude': tour['latitude'],
             'longitude': tour['longitude'],
             'w_latitude': tour['w_latitude'] if ('w_latitude' in tour) else "",
