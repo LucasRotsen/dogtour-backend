@@ -167,6 +167,7 @@ class GatewayService:
         response = self.tours_rpc.confirm(data)
         
         return Response(
+            json.dumps({'tour': response['tour']}),
             status=response['status'],
             mimetype='text/plain'
         )

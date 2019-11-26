@@ -141,12 +141,15 @@ class ToursService:
 
         data = {
             'walker_id': tour_data['user_id'],
+            'w_latitude': tour_data['latitude'],
+            'w_longitude': tour_data['longitude'],
             'status': 2 #ongoing tour
         }
 
         self.redis.hmset(tour_key, data)
 
         return {
+            'tour': self.extract_tour_info(self.redis.hgetall(tour_key)),
             'status': 200
         }
     
@@ -185,6 +188,8 @@ class ToursService:
             'walker': self.users_rpc.get(tour['walker_id']) if ('walker_id' in tour) else "",
             'latitude': tour['latitude'],
             'longitude': tour['longitude'],
+            'w_latitude': tour['w_latitude'] if ('w_latitude' in tour) else "",
+            'w_longitude': tour['w_longitude'] if ('w_longitude' in tour) else "",
             'status': tour['status']    
         }
 
