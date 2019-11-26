@@ -63,11 +63,15 @@ class ToursService:
 
         for tour_key in tours_keys:
             tour = self.redis.hgetall(tour_key)
+            
+            if 'walker_id' in tour:
+                if  (tour['status'] == tour_status and 
+                    (tour['owner_id'] == user_id or tour['walker_id'] == user_id)):
 
-            if  (tour['status'] == tour_status and 
-                (tour['owner_id'] == user_id or tour['walker_id'] == user_id)):
-                
-                tours[tour_key.split(':')[1]] = self.extract_tour_info(tour)
+                    tours[tour_key.split(':')[1]] = self.extract_tour_info(tour)
+            else:
+                if tour['status'] == tour_status and tour['owner_id'] == user_id:
+                    tours[tour_key.split(':')[1]] = self.extract_tour_info(tour)
         
         if tours:
             response['tours'] = tours
@@ -88,9 +92,13 @@ class ToursService:
 
         for tour_key in tours_keys:
             tour = self.redis.hgetall(tour_key)
-
-            if (tour['owner_id'] == user_id or tour['walker_id'] == user_id):
-                tours[tour_key.split(':')[1]] = self.extract_tour_info(tour)
+            
+            if 'walker_id' in tour:
+                if (tour['owner_id'] == user_id or tour['walker_id'] == user_id):
+                    tours[tour_key.split(':')[1]] = self.extract_tour_info(tour)
+            else:
+                if tour['owner_id'] == user_id:
+                    tours[tour_key.split(':')[1]] = self.extract_tour_info(tour)        
         
         if tours:
             response['tours'] = tours
