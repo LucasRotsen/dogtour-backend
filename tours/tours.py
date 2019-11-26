@@ -1,7 +1,7 @@
 import uuid
 import time
 
-from nameko.rpc import rpc
+from nameko.rpc import rpc, RpcProxy
 from nameko_redis import Redis
 
 
@@ -161,6 +161,9 @@ class ToursService:
         while not response and time.time() < timeout:
             response = self.match_walker(tour_id['tour_id'])
             time.sleep(1)
+
+        if not response:
+            self.redis.delete(tour_id['tour_id'])
         
         return {
             'tour': response,
