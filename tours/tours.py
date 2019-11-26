@@ -1,6 +1,5 @@
 import uuid
 import time
-import asyncio
 
 from nameko.rpc import rpc
 from nameko_redis import Redis
@@ -8,6 +7,9 @@ from nameko_redis import Redis
 
 class ToursService:
     name = "tours"
+
+    dogs_rpc = RpcProxy('dogs')
+    users_rpc = RpcProxy('users')
 
     redis = Redis('development')
 
@@ -65,7 +67,7 @@ class ToursService:
             if  (tour['status'] == tour_status and 
                 (tour['owner_id'] == user_id or tour['walker_id'] == user_id)):
                 
-                tours[tour_key.split(':')[1]] = tour
+                tours[tour_key.split(':')[1]] = self.extract_tour_info(tour)
         
         if tours:
             response['tours'] = tours
@@ -88,7 +90,7 @@ class ToursService:
             tour = self.redis.hgetall(tour_key)
 
             if (tour['owner_id'] == user_id or tour['walker_id'] == user_id):
-                tours[tour_key.split(':')[1]] = tour
+                tours[tour_key.split(':')[1]] = self.extract_tour_info(tour)
         
         if tours:
             response['tours'] = tours
@@ -111,7 +113,7 @@ class ToursService:
             tour = self.redis.hgetall(tour_key)
 
             if not 'walker_id' in tour:
-                tours[tour_key.split(':')[1]] = tour
+                tours[tour_key.split(':')[1]] = self.extract_tour_info(tour)
         
         if tours:
             response['tours'] = tours
@@ -154,11 +156,11 @@ class ToursService:
         tour_id = self.create(data)
          
         response = {}
-        timeout = time.time() + 60*2
+        timeout = time.time() + 60*3
 
         while not response and time.time() < timeout:
             response = self.match_walker(tour_id['tour_id'])
-            asyncio.sleep(2)
+            time.sleep(1)
         
         return {
             'tour': response,
@@ -170,7 +172,19 @@ class ToursService:
 
         tour = self.redis.hgetall('tour:' + tour_id)
 
-        return tour if ('walker_id' in tour) else {}
+        return self.extract_tour_info(tour) if ('walker_id' in tour) else {}
+
+    def extract_tour_info(self, tour):
+
+        return {
+            'owner': self.users_rpc.get(tour['owner_id']),
+            'dog': self.dogs_rpc.get(tour['dog_id']),
+            'walker': self.users_rpc.get(tour['walker_id']) if ('walker_id' in tour) else "",
+            'latitude': tour['latitude'],
+            'longitude': tour['longitude'],
+            'status': tour['status']    
+        }
+
 
 
 
